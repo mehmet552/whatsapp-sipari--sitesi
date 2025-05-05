@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restoran Sipariş Sistemi</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; background-color: #FFCA28; } /* Hardal sarısı arka plan */
+        .container { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; }
+        .category, .product { 
+            cursor: pointer; 
+            padding: 15px; 
+            border: 1px solid #a67c00; /* Hardal sarısı tonlarında çerçeve */
+            margin: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            width: 150px; 
+            height: 150px; 
+            border-radius: 8px; 
+            background: #FFD54F; /* Hardal sarısı kutular */
+        }
+        .category img, .product img { 
+            width: 80px; 
+            height: 80px; 
+            object-fit: cover; 
+            border-radius: 5px; 
+        }
+        .back-btn, .order-btn { 
+            display: block; 
+            margin: 20px auto; 
+            padding: 10px 20px; 
+            background: #a67c00; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        @media (max-width: 600px) {
+            .category, .product { width: 100px; height: 100px; font-size: 14px; padding: 10px; }
+            .category img, .product img { width: 60px; height: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="pageTitle">Kategoriler</h1>
+    
+    <!-- KATEGORİLER BURADA -->
+    <div class="container" id="categories">
+        <!-- 17 kategori oluşturuldu -->
+        <script>
+            for (let i = 1; i <= 17; i++) {
+                document.write(`
+                    <div class="category" onclick="showProducts(${i})">
+                        <img src="resimler/kategori${i}.jpg" alt="Kategori ${i}">
+                        <span>Kategori ${i}</span> <!-- Kategori adını değiştirmek için burayı düzenleyin -->
+                    </div>
+                `);
+            }
+        </script>
+    </div>
+    
+    <!-- ÜRÜNLER BURADA -->
+    <div class="container" id="products" style="display: none;">
+        <!-- Ürünler dinamik olarak buraya yüklenecek -->
+    </div>
+    <button class="back-btn" onclick="goBack()" style="display: none;">Geri Dön</button>
+    
+    <script>
+        const whatsappNumber = "05"; // WhatsApp numarasını değiştirmek için burayı güncelleyin
+        
+        const productsData = {};
+        for (let i = 1; i <= 17; i++) {
+            productsData[i] = Array.from({ length: 10 }, (_, index) => ({
+                name: `Ürün ${index + 1}`, // Ürün adlarını değiştirmek için burayı düzenleyin
+                img: `resimler/kategori${i}_urun${index + 1}.jpg`
+            }));
+        }
+
+        function showProducts(categoryId) {
+            document.getElementById('categories').style.display = 'none';
+            document.getElementById('products').style.display = 'flex';
+            document.getElementById('pageTitle').innerText = `Kategori ${categoryId}`; // Sayfa başlığını değiştirmek için burayı düzenleyin
+            document.querySelector('.back-btn').style.display = 'block';
+            
+            const productsContainer = document.getElementById('products');
+            productsContainer.innerHTML = "";
+            
+            productsData[categoryId].forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <span>${product.name}</span> <!-- Ürün ismini değiştirmek için burayı düzenleyin -->
+                    <button class="order-btn" onclick="orderProduct('${product.name}')">WhatsApp'tan Sipariş Ver</button>
+                `;
+                productsContainer.appendChild(productDiv);
+            });
+        }
+        
+        function orderProduct(productName) {
+            const message = encodeURIComponent(`Merhaba, ${productName} sipariş etmek istiyorum.`);
+            window.location.href = `https://wa.me/${whatsappNumber}?text=${message}`;
+        }
+        
+        function goBack() {
+            document.getElementById('categories').style.display = 'flex';
+            document.getElementById('products').style.display = 'none';
+            document.getElementById('pageTitle').innerText = 'Kategoriler';
+            document.querySelector('.back-btn').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
